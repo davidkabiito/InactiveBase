@@ -1,8 +1,7 @@
 #!/usr/bin/python
 
 """
-Created on            :Sep 06, 2013
-Author                :Rudra Prasad
+Created on            :Sep 06, 2019
 Modified By           :
 Date Of Modification  :
 Purpose               :sending emails
