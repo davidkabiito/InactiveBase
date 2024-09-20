@@ -1,8 +1,8 @@
 {
 "Oracle_db_conf": {
     "encryption"    : "False",
-    "username"      : "APP_CMS",
-    "password"      : "asd#cms",
+    "username"      : "************",
+    "password"      : "************",
     "dbip"          : "172.20.31.30",
     "dbport"        : "1523",
     "dbsid"         : "SRSDB"
@@ -15,21 +15,21 @@
     "start_job"     : "True",
     "encryption"    : "False",
     "host"          : "elita",
-    "host_ip"       : "172.20.33.25",
-    "user"          : "root",
-    "password"      : "bullet",
+    "host_ip"       : "X.X.X.X",
+    "user"          : "****",
+    "password"      : "*******",
     "upload_loc"    : "/titus/network_attach/requested"
     },
 "email": {
-    "from"          : "support@flytxt.com",
+    "from"          : "***********************",
     "to"            : [
                         " "
                       ],
     "cc"            : [
-                        "akhil.sudhakaran@flytxt.com"
+                        "***********************"
                       ],
     "bcc"           : [],
-    "subject"       : "NEON@MTN-SDN :Inactive Base Data Upload Alert",
+    "subject"       : "NEON@****** :Inactive Base Data Upload Alert",
     "attachment"    : [
                         "/home/python/script/script_name/templates/attachment/test1.txt",
                         "/home/python/script/script_name/templates/attachment/test2.txt"
