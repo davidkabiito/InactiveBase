@@ -1,0 +1,44 @@
+{
+"Oracle_db_conf": {
+    "encryption"    : "False",
+    "username"      : "APP_CMS",
+    "password"      : "asd#cms",
+    "dbip"          : "172.20.31.30",
+    "dbport"        : "1523",
+    "dbsid"         : "SRSDB"
+    },
+"local_upload": {
+    "DFE"           : "/sftp/partners/global/Inactive_Base",
+    "Archive"       : "/sftp/Archive"
+    },
+"remote_upload": {
+    "start_job"     : "True",
+    "encryption"    : "False",
+    "host"          : "elita",
+    "host_ip"       : "172.20.33.25",
+    "user"          : "root",
+    "password"      : "bullet",
+    "upload_loc"    : "/titus/network_attach/requested"
+    },
+"email": {
+    "from"          : "support@flytxt.com",
+    "to"            : [
+                        " "
+                      ],
+    "cc"            : [
+                        "akhil.sudhakaran@flytxt.com"
+                      ],
+    "bcc"           : [],
+    "subject"       : "NEON@MTN-SDN :Inactive Base Data Upload Alert",
+    "attachment"    : [
+                        "/home/python/script/script_name/templates/attachment/test1.txt",
+                        "/home/python/script/script_name/templates/attachment/test2.txt"
+                      ]
+    },
+"smtp": {
+    "server"        : " ",
+    "port"          : " ",
+    "username"      : " ",
+    "password"      : " "
+    }
+}

@@ -1,0 +1,178 @@
+"""
+Created on            :Sep 06, 2013
+Author                :Rudra Prasad
+Modified By           :
+Date Of Modification  :
+Purpose               :SSHAccess wrapper to paramiko
+"""
+
+import os
+import sys
+import time
+import paramiko
+
+
+################### adding log module ###################
+modulename = os.path.basename(__file__).split('.')[0]
+script_path = os.path.dirname(os.path.abspath(__file__))
+corelog_path = os.path.join(script_path, '../Log_Module')
+
+if not os.path.exists(corelog_path):
+    print ''
+    print 'ERROR :From pycore.PyUtility :CORE LOG PATH NOT FOUND [%s]' % (corelog_path)
+    print 'Exiting Form Program Execution.'
+    print ''
+    sys.exit()
+else:
+    sys.path.append(corelog_path)
+
+try:
+    from LogUtility import Logger
+except ImportError, e:
+    print ''
+    print 'ERROR :From pycore.PyUtility :Core Modules Import Error :' + str(e)
+    print 'Exiting Form Program Execution.'
+    print ''
+    sys.exit()
+
+############################################################
+
+def get_error(errorlog=None):
+        if errorlog:
+            print ''
+            print errorlog
+            print 'Exiting Form Program Execution.'
+            print ''
+            sys.exit()
+
+class SSHAccess(object):
+    """SSHAccess wrapper to paramiko"""
+
+    def __init__(self, log, host, user, passwd):
+        self.host = host
+        self.user = user
+        self.passwd = passwd
+        self.log = log
+        self.error = None
+        self.sshtransport = None
+        self.sftpclient = None
+        self._try_to_connect()
+
+    def _try_to_connect(self):
+        err = None
+        try:
+            self.sshtransport = paramiko.Transport((self.host, 22))
+            self.sshtransport.connect(username=self.user, password=self.passwd)
+            self.sftpclient = paramiko.SFTPClient.from_transport(self.sshtransport)
+        except paramiko.AuthenticationException, e:
+            err = e
+        except paramiko.SSHException, e:
+            err = e
+        except Exception, e:
+            err = e
+
+        if err:
+            self.error = 'Error in %s.SSHAccess._try_to_connect :%s' % (modulename, str(err))
+            self.log.setLog('ERROR', str(err))
+            print self.error
+        else:
+            self.log.setLog('INFO', 'Conecting to %s :Success' % self.host)
+
+
+    def execute(self, cmd):
+        success = False
+        err = None
+        out = []
+        if not self.error:
+            try:
+                channel = self.sshtransport.open_session()
+                channel.exec_command(cmd)
+            except Exception, e:
+                err = e
+
+            counter = 0
+            while not channel.recv_ready() and counter < 10:
+                time.sleep(1)
+                counter += 1
+
+            out = ''
+            while True:
+                bash_output = channel.recv(10485760)
+                if not bash_output:
+                    break
+
+                out = out + bash_output
+
+            cmd_exe_status = channel.recv_exit_status()
+
+            if cmd_exe_status == 0:
+                success = True
+                out = [ line.replace('\n', '') for line in out.split('\n')]
+                out = filter(None, out)
+            else:
+                err = 'Error in Command Execution [cmd:%s]' % (cmd)
+
+            if err:
+                self.error = 'Error in %s.SSHAccess.execute :%s' % (modulename, str(err))
+                get_error(self.error)
+
+        return (success, out)
+
+    def scp_get(self, remote, local):
+        status = None
+        err = None
+        if not self.error:
+            try:
+                status = self.sftpclient.get(remote, local)
+            except OSError, e:
+                status = None
+                err = e
+            except IOError, e:
+                status = None
+                err = e
+            except Exception, e:
+                status = None
+                err = e
+
+            if err:
+                self.error = 'Error in %s.SSHAccess.scp_get :%s' % (modulename, str(err))
+                get_error(self.error)
+
+            #self.sftpclient.close()
+
+        return status
+
+    def scp_put(self, local, remote):
+        status = False
+        err = None
+        if not self.error:
+            try:
+                status = self.sftpclient.put(local, remote)
+                status = True
+            except OSError, e:
+                status = False
+                err = e
+            except IOError, e:
+                status = False
+                err = e
+            except Exception, e:
+                status = False
+                err = e
+
+            if err:
+                self.error = 'Error in %s.SSHAccess.scp_put :%s' % (modulename, str(err))
+                self.log.setLog('ERROR', 'scp.put process failed :%s' % str(err))
+                print 'ERROR :' + self.error
+
+            #self.sftpclient.close()
+
+        return status
+
+    def close_sftpclient(self):
+        self.sshtransport.close()
+
+    def close_sshtransport(self):
+        self.sshtransport.close()
+
+
+#END
