@@ -1,4 +1,3 @@
-#Auther: Rudra Prasad
 #For logging purpose
 
 import os
