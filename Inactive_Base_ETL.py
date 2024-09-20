@@ -1,12 +1,10 @@
 #!/usr/bin/python
 
 """
-Created on      :May 16, 2014
-Author          :Rudra Prasad
+Created on      :May 16, 2019
 Purpose         :Lock at successful db query execution and upload to DFE, Archive and Application Server for a day.
                  Also send alert mails for success and failure in ETL process.
 
-Script Deployed by Akhil P.S
 """
 
 
